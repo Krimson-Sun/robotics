@@ -26,6 +26,7 @@ for elem in data:
     coords.append(crd)
     lidar.append(ldr)
 
+
 for i in range(len(coords)):
     polar_to_decart(i)
 
