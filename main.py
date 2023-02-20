@@ -5,11 +5,14 @@ import matplotlib.pyplot as plt
 def polar_to_decart(i):
     global coords, lidar, res
     for j in range(len(lidar)):
-        angle = coords[i][2] + math.radians(120) - math.radians(0.5 * j)
-        x = lidar[i][j] * math.cos(angle)
-        y = lidar[i][j] * math.sin(angle)
-        ans = ((x + coords[i][0]), y + coords[i][1])
-        res.append(ans)
+        if lidar[i][j] == 5.6:
+            continue
+        else:
+            angle = coords[i][2] + math.radians(120) - math.radians(0.5 * j)
+            x = lidar[i][j] * math.cos(angle)
+            y = lidar[i][j] * math.sin(angle)
+            ans = ((x + coords[i][0]), y + coords[i][1])
+            res.append(ans)
 
 
 with open("examp12.txt", "r") as f:
