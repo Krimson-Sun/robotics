@@ -1,11 +1,12 @@
 import math
 import matplotlib.pyplot as plt
+import numpy
 
 
 def polar_to_decart(i):
     global coords, lidar, res
     for j in range(len(lidar)):
-        if lidar[i][j] == 5.6:
+        if lidar[i][j] == 5.6 or lidar[i][j] < 0.3:
             continue
         else:
             angle = coords[i][2] + math.radians(120) - math.radians(0.5 * j)
@@ -14,6 +15,13 @@ def polar_to_decart(i):
             ans = ((x + coords[i][0]), y + coords[i][1])
             res.append(ans)
 
+def coords_pars(data, crds, ldar):
+    for elem in data:
+        tmp = elem.split(';')
+        crd = list(map(float, tmp[0].split(', ')))
+        ldr = list(map(float, tmp[1].split(', ')))
+        crds.append(crd)
+        ldar.append(ldr)
 
 with open("examp12.txt", "r") as f:
     data = f.readlines()
@@ -22,13 +30,7 @@ res = []
 coords = []
 lidar = []
 
-for elem in data:
-    tmp = elem.split(';')
-    crd = list(map(float, tmp[0].split(', ')))
-    ldr = list(map(float, tmp[1].split(', ')))
-    coords.append(crd)
-    lidar.append(ldr)
-
+coords_pars(data, coords, lidar)
 
 for i in range(len(coords)):
     polar_to_decart(i)
