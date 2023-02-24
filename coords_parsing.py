@@ -14,7 +14,6 @@ def polar_to_decart(i, coords, lidar, res):
             ans = ((x + coords[i][0]), y + coords[i][1])
             res.append(ans)
 
-
 def coords_pars(data, crds, ldar):
     for elem in data:
         tmp = elem.split(';')
@@ -40,10 +39,10 @@ def get_decart_coords(FileName):
     return res
 
 
-res = get_decart_coords('examp12.txt')
+# res = get_decart_coords()
 # print(len(res))
-print(min(x[0] for x in res), max(x[0] for x in res))
-print(min(x[1] for x in res), max(x[1] for x in res))
+# print(min(x[0] for x in res), max(x[0] for x in res))
+# print(min(x[1] for x in res), max(x[1] for x in res))
 # plt.plot([x[1] for x in res], [x[0] for x in res], 'ro')
 # plt.show()
 # pygame.init()
@@ -62,3 +61,5 @@ print(min(x[1] for x in res), max(x[1] for x in res))
 #     screen.blit(surface, (0, 0))
 #     pygame.display.update()
 # screen.show()
+
+
