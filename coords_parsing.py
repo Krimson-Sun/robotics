@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import numpy
 
 
-def polar_to_decart(i):
-    global coords, lidar, res
+def polar_to_decart(i, coords, lidar, res):
     for j in range(len(lidar)):
         if lidar[i][j] == 5.6 or lidar[i][j] < 0.3:
             continue
@@ -23,20 +22,29 @@ def coords_pars(data, crds, ldar):
         crds.append(crd)
         ldar.append(ldr)
 
-with open("examp12.txt", "r") as f:
-    data = f.readlines()
 
-res = []
-coords = []
-lidar = []
+def get_decart_coords(FileName):
+    with open(FileName, "r") as f:
+        data = f.readlines()
 
-coords_pars(data, coords, lidar)
+    res = []
+    coords = []
+    lidar = []
 
-for i in range(len(coords)):
-    polar_to_decart(i)
+    coords_pars(data, coords, lidar)
 
-plt.plot([x[1] for x in res], [x[0] for x in res], 'ro')
-plt.show()
+    for i in range(len(coords)):
+        polar_to_decart(i, coords, lidar, res)
+
+    return res
+
+
+# res = get_decart_coords()
+# print(len(res))
+# print(min(x[0] for x in res), max(x[0] for x in res))
+# print(min(x[1] for x in res), max(x[1] for x in res))
+# plt.plot([x[1] for x in res], [x[0] for x in res], 'ro')
+# plt.show()
 # pygame.init()
 # screen = pygame.display.set_mode((1000, 1000))
 # surface = pygame.Surface((1000, 1000))
