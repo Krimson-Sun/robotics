@@ -1,6 +1,8 @@
 import pygame
 from coords_parsing import *
 from math import ceil
+from rdp import rdp
+import numpy as np
 
 pygame.init()
 size = width, height = 720, 720
@@ -38,7 +40,10 @@ class Board:
 
     def get_points(self, filename: str):
         res = get_decart_coords(filename)
+        res = np.array(res)
+        res = rdp(res, epsilon = 0.001, algo='iter')
         print(res[0])
+
 
         def convert_coodrs(coords: list):
             global scale
@@ -64,5 +69,7 @@ while running:
             screen.fill((0, 0, 0))
             board.render(screen)
             pygame.display.flip()
+
+
 
 # li = coords_parsing.get_decart_coords("examp12.txt")
