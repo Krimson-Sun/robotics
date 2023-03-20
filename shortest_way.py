@@ -1,8 +1,7 @@
 import pygame
-from coords_parsing import *
-from math import ceil
-from rdp import rdp
 import numpy as np
+from hough_alg import hough_transform_dec
+import math
 
 pygame.init()
 size = width, height = 720, 720
@@ -18,7 +17,7 @@ class Board:
         self.left = 0
         self.top = 0
         self.cell_size = 5
-        self.points = self.get_points('examp12.txt')
+        self.points = np.load('coords_non_rdp.npy')
 
     def set_view(self, left, top, cell_size):
         self.left = left
@@ -38,24 +37,40 @@ class Board:
         #                           self.top + self.cell_size * j,
         #                           self.cell_size, self.cell_size], 1)
 
-    def get_points(self, filename: str):
-        res = get_decart_coords(filename)
-        res = np.array(res)
-        res = rdp(res, epsilon = 0.001, algo='iter')
-        print(res[0])
+    # def get_points(self, filename: str):
+    #     res = get_decart_coords(filename)
+    #     res = np.array(res)
+    #     res = rdp(res, epsilon=0.01, algo='iter')
+    #
+    #
+    #     def convert_coodrs(coords: list):
+    #         global scale
+    #         modified = []
+    #         modifier = tuple(map(abs, [min(x[0] for x in res), min(x[1] for x in res)]))
+    #         for i in range(len(coords)):
+    #             modified.append((ceil((coords[i][0] + modifier[0]) * scale), ceil((coords[i][1] + modifier[1]) * scale)))
+    #         return modified
+    #
+    #     points = convert_coodrs(res)
+    #     return points
 
-
-        def convert_coodrs(coords: list):
-            global scale
-            modified = []
-            modifier = tuple(map(abs, [min(x[0] for x in res), min(x[1] for x in res)]))
-            for i in range(len(coords)):
-                modified.append((ceil((coords[i][0] + modifier[0]) * scale), ceil((coords[i][1] + modifier[1]) * scale)))
-            return modified
-
-        points = convert_coodrs(res)
-        print(points[0])
-        return points
+    def get_lines(self):
+        map_size = max((max(elem[1] for elem in self.points) - min(elem[0] for elem in self.points)),
+                       (max(elem[0] for elem in self.points) - min(elem[0] for elem in self.points)))
+        detected_peaks = hough_transform_dec(self.points, map_size)
+        line_params = []
+        for elem in detected_peaks:
+            if elem[2] > 0.0015:
+                    line_params.append([elem[0], elem[1]])
+        lines = []
+        for angle, param in line_params:
+            if ((param / math.cos(angle)) <= map_size) and ((param / math.cos(angle)) > 0):
+                lines.append([angle, param])
+            elif (-param / math.sin(angle) > 0) and (-param / math.sin(angle) < map_size):
+                lines.append([angle, param])
+            elif ((map_size * math.sin(angle) + param) / math.cos(angle)) > 0 and ((map_size * math.sin(angle)
+                                                                                    + param) / math.cos(angle)):
+                lines.append([angle, param])
 
 
 board = Board(200, 200)

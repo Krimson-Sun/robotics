@@ -1,7 +1,9 @@
 import math
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
+from rdp import rdp
 
+scale = 60
 
 def polar_to_decart(i, coords, lidar, res):
     for j in range(len(lidar)):
@@ -38,6 +40,26 @@ def get_decart_coords(FileName):
 
     return res
 
+def get_points(filename: str):
+    res = get_decart_coords(filename)
+    res = np.array(res)
+    # res = rdp(res, epsilon=0.01, algo='iter')
+
+
+    def convert_coodrs(coords: list):
+        global scale
+        modified = []
+        modifier = tuple(map(abs, [min(x[0] for x in res), min(x[1] for x in res)]))
+        for i in range(len(coords)):
+            modified.append((math.ceil((coords[i][0] + modifier[0]) * scale), math.ceil((coords[i][1] + modifier[1]) * scale)))
+        return modified
+
+    points = convert_coodrs(res)
+    return points
+
+li = np.array(get_points('examp12.txt'))
+
+np.save('coords_non_rdp', li)
 
 # res = get_decart_coords()
 # print(len(res))
