@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from hough_alg import hough_transform_dec
+from hough_alg import get_walls
 import math
 
 pygame.init()
@@ -27,8 +27,12 @@ class Board:
     def render(self, screen):
         pygame.draw.rect(screen, (153, 153, 255),
                          [self.left, self.top, self.cell_size * self.width, self.cell_size * self.height], 0)
+        for line in get_walls(self.points):
+            pygame.draw.line(screen, (255, 0, 0), line)
         for point in self.points:
             pygame.draw.rect(screen, (255, 0, 0), [point[0], point[1], 1, 1])
+
+
 
         # for i in range(self.width):
         #     for j in range(self.height):
@@ -54,23 +58,6 @@ class Board:
     #     points = convert_coodrs(res)
     #     return points
 
-    def get_lines(self):
-        map_size = max((max(elem[1] for elem in self.points) - min(elem[0] for elem in self.points)),
-                       (max(elem[0] for elem in self.points) - min(elem[0] for elem in self.points)))
-        detected_peaks = hough_transform_dec(self.points, map_size)
-        line_params = []
-        for elem in detected_peaks:
-            if elem[2] > 0.0015:
-                    line_params.append([elem[0], elem[1]])
-        lines = []
-        for angle, param in line_params:
-            if ((param / math.cos(angle)) <= map_size) and ((param / math.cos(angle)) > 0):
-                lines.append([angle, param])
-            elif (-param / math.sin(angle) > 0) and (-param / math.sin(angle) < map_size):
-                lines.append([angle, param])
-            elif ((map_size * math.sin(angle) + param) / math.cos(angle)) > 0 and ((map_size * math.sin(angle)
-                                                                                    + param) / math.cos(angle)):
-                lines.append([angle, param])
 
 
 board = Board(200, 200)

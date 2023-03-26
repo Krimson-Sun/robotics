@@ -2,8 +2,9 @@ import math
 import scipy
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
-li = np.load('coords_non_rdp.npy')
+li = np.load('coords2.npy')
 
 map_size = max((max(elem[1] for elem in li) - min(elem[0] for elem in li)),
                (max(elem[0] for elem in li) - min(elem[0] for elem in li)))
@@ -24,7 +25,7 @@ def hough_transform_dec(input, map_size):
                 hough_graph[point][j] += 1 / max_point_val
 
     resized = cv2.resize(hough_graph, (500, 500), interpolation=cv2.INTER_AREA)
-    # cv2.imshow("hough_graph", resized)
+    # cv2.imwrite("hough_graph.jpg", resized)
 
 
      # define an 8-connected neighborhood
@@ -64,14 +65,51 @@ def hough_transform_dec(input, map_size):
     detected_peaks_params = sorted(detected_peaks_params, key=lambda x: x[-1], reverse=True)
     return detected_peaks_params
 
-detected_peaks_params = hough_transform_dec(li, map_size)
-lines = []
 
-# print(min(elem[2] for elem in detected_peaks_params), max(elem[2] for elem in detected_peaks_params))
-#
-# for elem in detected_peaks_params:
-#     if elem[2] > 0.0015:
-#         lines.append(elem)
+def get_walls(points):
+    map_size = max((max(elem[1] for elem in points) - min(elem[0] for elem in points)),
+                   (max(elem[0] for elem in points) - min(elem[0] for elem in points)))
+    detected_peaks = hough_transform_dec(points, map_size)
+    line_params = []
+    for elem in detected_peaks:
+        if elem[2] > 0.0015:
+            line_params.append([elem[0], elem[1]])
+    lines = []
+    for angle, param in line_params:
+        if ((param / math.cos(angle)) <= map_size) and ((param / math.cos(angle)) > 0):
+            lines.append([0, param / math.cos(angle)])
+        elif (-param / math.sin(angle) > 0) and (-param / math.sin(angle) < map_size):
+            lines.append([-param / math.sin(angle), 0])
+        elif ((map_size * math.sin(angle) + param) / math.cos(angle)) > 0 and ((map_size * math.sin(angle)
+                                                                                + param) / math.cos(angle)):
+            lines.append([map_size, (map_size * math.sin(angle) + param) / math.cos(angle)])
+    return lines
+
+detected_peaks = hough_transform_dec(li, map_size)
+print(detected_peaks)
+line_params = []
+for elem in detected_peaks:
+    line_params.append([elem[0], elem[1]])
+lines = []
+for angle, param in line_params:
+    if ((param / math.cos(angle)) <= map_size) and ((param / math.cos(angle)) > 0):
+        lines.append([angle, param])
+    elif (-param / math.sin(angle) > 0) and (-param / math.sin(angle) < map_size):
+        lines.append([angle, param])
+    elif ((map_size * math.sin(angle) + param) / math.cos(angle)) > 0 and ((map_size * math.sin(angle)
+                                                                            + param) / math.cos(angle)):
+        lines.append([angle, param])
+print(lines)
+
+def draw_lines(angle, param):
+    x = np.linspace(0, 1250, 1250)
+    y = (x * np.sin(angle) + param) / np.cos(angle)
+    plt.plot(x, y, '-r')
+
+for line in lines:
+    draw_lines(line[0], line[1])
+plt.show()
+
 # print(len(lines))
 
 # line_params = [[elem[0], elem[1]] for elem in detected_peaks_params]

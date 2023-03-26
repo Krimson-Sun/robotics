@@ -57,9 +57,9 @@ def get_points(filename: str):
     points = convert_coodrs(res)
     return points
 
-li = np.array(get_points('examp12.txt'))
+li = np.array(get_points('examp2.txt'))
 
-np.save('coords_non_rdp', li)
+np.save('coords2', li)
 
 # res = get_decart_coords()
 # print(len(res))
