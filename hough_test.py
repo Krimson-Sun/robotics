@@ -1,13 +1,16 @@
 import math
-import scipy
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
 points = np.load('coords2.npy')
 
-setX = abs(616 - max(elem[0] for elem in points))
-setY = abs(616 - max(elem[1] for elem in points))
+map_size = max(abs((max(elem[1] for elem in points) - min(elem[0] for elem in points))),
+               abs((max(elem[0] for elem in points) - min(elem[0] for elem in points))))
+
+setX = abs(map_size - max(elem[0] for elem in points))
+setY = abs(map_size - max(elem[1] for elem in points))
+
 def make_image(points):
     map_size = max((max(elem[1] for elem in points) - min(elem[0] for elem in points)),
         (max(elem[0] for elem in points) - min(elem[0] for elem in points)))
