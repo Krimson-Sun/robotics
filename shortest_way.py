@@ -17,7 +17,7 @@ class Board:
         self.left = 0
         self.top = 0
         self.cell_size = 5
-        self.points = np.load('coords_non_rdp.npy')
+        self.points = np.load('coordinates/coords_non_rdp.npy')
 
     def set_view(self, left, top, cell_size):
         self.left = left

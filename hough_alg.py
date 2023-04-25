@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-li = np.load('coords2.npy')
+li = np.load('coordinates/coords2.npy')
 
 map_size = max((max(elem[1] for elem in li) - min(elem[0] for elem in li)),
                (max(elem[0] for elem in li) - min(elem[0] for elem in li)))

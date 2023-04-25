@@ -6,7 +6,7 @@ import math
 
 walls = []
 obst = []
-points = rdp(np.array(get_decart_coords('examp12.txt')), epsilon=0.15, algo='iter')
+points = rdp(np.array(get_decart_coords('coordinates/examp12.txt')), epsilon=0.15, algo='iter')
 
 
 flag = True

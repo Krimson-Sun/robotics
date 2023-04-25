@@ -1,7 +1,6 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-from rdp import rdp
 
 scale = 60
 
@@ -57,7 +56,7 @@ def get_points(filename: str):
     points = convert_coodrs(res)
     return points
 
-li = np.array(get_points('examp2.txt'))
+li = np.array(get_points('coordinates/examp2.txt'))
 
 np.save('coords2', li)
 
